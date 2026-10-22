@@ -1,0 +1,16 @@
+{
+  "id": "./",
+  "name": "VisChrom 随身配色室",
+  "short_name": "VisChrom",
+  "description": "完全本地的穿搭配色助手，支持多色衣物与识色辅助",
+  "lang": "zh-CN",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#f5f5ef",
+  "theme_color": "#315847",
+  "icons": [
+    { "src": "./icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any" },
+    { "src": "./icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any maskable" }
+  ]
+}

@@ -1,0 +1,10 @@
+node_modules/
+artifacts/
+.DS_Store
+android/.gradle/
+android/local.properties
+android/**/build/
+*.keystore
+*.jks
+PROGRESS.md
+docs/VALIDATION.md

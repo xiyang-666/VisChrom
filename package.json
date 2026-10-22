@@ -1,0 +1,15 @@
+{
+  "name": "vischrom",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "完全本地的多颜色穿搭配色助手",
+  "scripts": {
+    "dev": "node scripts/serve.mjs",
+    "start": "node scripts/serve.mjs",
+    "test": "node --test tests/*.test.mjs",
+    "check": "node --check public/app.js && node --check public/color-engine.js && node --check public/sw.js",
+    "test:browser": "node tests/browser.cjs"
+  },
+  "engines": { "node": ">=18" }
+}
