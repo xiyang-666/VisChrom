@@ -38,31 +38,6 @@ HOST=0.0.0.0 PORT=4173 npm start
 
 手机浏览器打开电脑的局域网 IP。**普通局域网 HTTP 不支持 Service Worker 离线安装**，只适合联机预览；不要把手机上的 `localhost` 当成电脑地址。
 
-### 在手机上使用
-
-**PWA 路径**：通过可信 HTTPS 静态地址首次打开，等待离线资源缓存后添加到主屏幕。后续分析与离线启动不依赖服务器；首次分发资源仍需要可访问的静态地址。当前项目未发布任何托管站点。iOS 可通过 Safari 的“添加到主屏幕”使用；设备清理站点数据后需重新缓存。
-
-**完全本地安装包路径**：构建下方 Android APK，所有资源随包安装，运行时不需要静态站点或后端服务。当前未提供已验证的 APK。
-
-浏览器需支持 ES Modules、`dialog`、`structuredClone`、Canvas、Pointer Events。建议使用现代 Chrome / Safari 与更新后的 Android System WebView。实际相机入口、HEIC 解码和 PWA 安装界面因设备而异；读取失败可改用 JPG/PNG 或手动选色。
-
-## Android 构建
-
-构建环境：JDK 17、Gradle 8.11.1、Android SDK Platform 35、Build Tools 35.0.0。首轮构建需要下载构建工具与依赖；**应用运行不需要网络**。
-
-```bash
-# 配置本机 Android SDK，或在 android/local.properties 设置 sdk.dir。
-export ANDROID_SDK_ROOT=/path/to/android-sdk
-gradle -p android assembleDebug
-```
-
-输出：`android/app/build/outputs/apk/debug/app-debug.apk`。
-
-也可以在 GitHub 的 Actions 手动运行 **Build Android APK (manual)**，下载 `VisChrom-debug-apk` 构建产物。此流程默认不会自动运行；发布前需签名与真机验收。
-
-Android 工程通过 `WebViewAssetLoader` 从安装包映射本地 HTTPS origin；不联网。`allowBackup=false` 禁止系统自动云备份。相机借助系统拍照应用，不请求本应用的相机权限；临时照片位于缓存目录。选图使用系统文档选择器，导出由用户指定位置。
-
-本次开发环境只有 Java 11，且没有 Android SDK / Gradle，所以尚未声称 Android 编译或真机测试通过。工程的最低系统 API 为 24，但仍需现代 WebView。
 
 ## 颜色算法与边界
 
@@ -83,40 +58,3 @@ Android 工程通过 `WebViewAssetLoader` 从安装包映射本地 HTTPS origin�
 
 识色参考使用线性 RGB 中的近似红/绿色觉模拟矩阵，再比较感知颜色距离。它不是用户色觉的精确模型，不可用于诊断。开启识色辅助不会改变配色分。真实红绿色觉障碍用户的可用性验证尚待进行。
 
-## 测试
-
-```bash
-npm test
-npm run check
-```
-
-端到端测试使用 Playwright，仅开发验证时需要安装：
-
-```bash
-npm install --no-save --package-lock=false playwright
-npx playwright install chromium --only-shell
-# 一个终端运行 npm start，另一个运行：
-npm run test:browser
-```
-
-如已有 Playwright 或浏览器，可设置 `PLAYWRIGHT_MODULE`（包的绝对路径）与 `CHROMIUM_EXECUTABLE`。端到端测试输出放在 `artifacts/`，不提交个人备份文件。
-
-已验证 14 项引擎测试及 Chromium 桌面/手机尺寸交互，包括红蓝合成图 75% / 25% 提取、手机区域选择、锁定多色不变、收藏刷新恢复、备份恢复和断网新标签页启动。尚未验证实体 Android/iOS 手机、原生系统相机、APK 构建、真实色觉障碍用户体验。
-
-## 文件结构
-
-```text
-public/                   无依赖离线应用
-  color-engine.js         纯函数颜色、评分、推荐、取色算法
-  app.js                  交互、照片区域选择、本地存储
-  index.html / styles.css  移动端与桌面界面
-  sw.js                   离线资源缓存
-android/                  Android 原生资源打包与文件桥接
-scripts/serve.mjs          仅用于开发预览的静态服务器
-tests/                    引擎测试与浏览器交互测试
-docs/                     界面截图
-```
-
-开发进度与详细验证记录只保留在本地，不纳入 Git 仓库。
-
-技术依据：[Service Worker 安全上下文](https://developer.mozilla.org/en-US/docs/Web/API/Service_Worker_API)、[Android 本地 WebView 内容](https://developer.android.com/develop/ui/views/layout/webapps/load-local-content)、[AGP 8.9 构建环境](https://developer.android.com/build/releases/agp-8-9-0-release-notes)、[W3C 不只依靠颜色传达信息](https://www.w3.org/WAI/WCAG22/Understanding/use-of-color.html)、[色觉模拟模型论文](https://pubmed.ncbi.nlm.nih.gov/19834201/)。
